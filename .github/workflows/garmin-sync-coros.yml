@@ -8,13 +8,13 @@ env:
   GITHUB_NAME: junyanw
   GITHUB_EMAIL: wujunyan1112@icloud.com
   ## 佳明配置
-  GARMIN_AUTH_DOMAIN: ${{ secrets.GARMIN_AUTH_DOMAIN }}
-  GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
-  GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+  GARMIN_AUTH_DOMAIN: COM
+  GARMIN_EMAIL: wujunyan1112@icloud.com
+  GARMIN_PASSWORD: 0I2xx@14
 
   ## Coros配置
-  COROS_EMAIL: ${{ secrets.COROS_EMAIL }}
-  COROS_PASSWORD: ${{ secrets.COROS_PASSWORD }}
+  COROS_EMAIL: wujunyan1112@icloud.com
+  COROS_PASSWORD: 0i2xxa14
 
 jobs:
   build:
