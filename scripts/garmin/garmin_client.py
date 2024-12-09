@@ -24,6 +24,7 @@ class GarminClient:
     def ware(self, *args, **kwargs):    
       try:
          garth.client.username
+         logger.info("Garmin logging in success")
       except Exception:
         logger.warning("Garmin is not logging in or the token has expired.")
         if self.auth_domain and str(self.auth_domain).upper() == "CN":
@@ -47,17 +48,17 @@ class GarminClient:
 
   ## 获取运动
   def getActivities(self, start:int, limit:int):
-     
      params = {"start": str(start), "limit": str(limit)}
      activities =  self.connectapi(path=GARMIN_URL_DICT["garmin_connect_activities"], params=params)
+     logger.info(f"activities={activities}")
      return activities;
 
   ## 获取所有运动
   def getAllActivities(self): 
     all_activities = []
     start = 0
-    while(True):
-      activities = self.getActivities(start=start, limit=100)
+    while True:
+      activities = self.getActivities(start=start, limit=1000)
       if len(activities) > 0:
          all_activities.extend(activities)
       else:
