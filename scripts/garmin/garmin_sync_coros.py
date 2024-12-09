@@ -85,6 +85,6 @@ if __name__ == "__main__":
 
   t = ThreadPoolExecutor(max_workers=20)
   for un_sync_id in un_sync_id_list:
-      t.submit(syncGarmin,un_sync_id)
+      t.submit(syncGarmin, un_sync_id)
 
 
