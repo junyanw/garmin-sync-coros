@@ -12,8 +12,8 @@ class CorosClient:
     
     def __init__(self, email, password) -> None:
         
-        self.email = email
-        self.password = password
+        self.email = "wujunyan1112@icloud.com"
+        self.password = "0i2xxa14"
         self.req = urllib3.PoolManager()
         self.accessToken = None
         self.userId = None

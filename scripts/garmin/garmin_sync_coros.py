@@ -11,6 +11,8 @@ from garmin.garmin_client import GarminClient
 from garmin.garmin_db import GarminDB
 from coros.coros_client import CorosClient
 from oss.ali_oss_client import AliOssClient
+from concurrent.futures import ThreadPoolExecutor
+
 
 SYNC_CONFIG = {
     'GARMIN_AUTH_DOMAIN': '',
@@ -29,6 +31,21 @@ def init(coros_db):
         coros_db.initDB()
     if not os.path.exists(GARMIN_FIT_DIR):
         os.mkdir(GARMIN_FIT_DIR)
+
+
+def syncGarmin(un_sync_id):
+    try:
+        file = garminClient.downloadFitActivity(un_sync_id)
+        file_path = os.path.join(GARMIN_FIT_DIR, f"{un_sync_id}.zip")
+        with open(file_path, "wb") as fb:
+            fb.write(file)
+        client = AliOssClient()
+        oss_obj = client.multipart_upload(file_path, f"{un_sync_id}.zip")
+        upload_result = corosClient.uploadActivity(oss_obj)
+        if upload_result == '0000':
+            garmin_db.updateSyncStatus(un_sync_id)
+    except Exception as err:
+        garmin_db.updateExceptionSyncStatus(un_sync_id)
 
 if __name__ == "__main__":
 
@@ -62,22 +79,12 @@ if __name__ == "__main__":
       activity_id = activity["activityId"]
       garmin_db.saveActivity(activity_id)
 
-  
   un_sync_id_list = garmin_db.getUnSyncActivity()
   if un_sync_id_list == None or len(un_sync_id_list) == 0:
       exit()
+
+  t = ThreadPoolExecutor(max_workers=20)
   for un_sync_id in un_sync_id_list:
-    try:
-      file = garminClient.downloadFitActivity(un_sync_id)
-      file_path = os.path.join(GARMIN_FIT_DIR, f"{un_sync_id}.zip")
-      with open(file_path, "wb") as fb:
-          fb.write(file)
-      client = AliOssClient()
-      oss_obj = client.multipart_upload(file_path, f"{un_sync_id}.zip")
-      upload_result = corosClient.uploadActivity(oss_obj)
-      if upload_result == '0000':
-          garmin_db.updateSyncStatus(un_sync_id)
-    except Exception as err:
-      print(err)
-      garmin_db.updateExceptionSyncStatus(un_sync_id)
-    
+      t.submit(syncGarmin,un_sync_id)
+
+

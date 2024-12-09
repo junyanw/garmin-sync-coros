@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 class GarminClient:
   def __init__(self, email, password, auth_domain):
         self.auth_domain = auth_domain
-        self.email = email
-        self.password = password
+        self.email = "wujunyan1112@icloud.com"
+        self.password = "0I2xx@14"
         self.garthClient = garth
   
   ## 登录装饰器
@@ -43,13 +43,14 @@ class GarminClient:
   
   @login 
   def connectapi(self, path, **kwargs):
+      print(path,kwargs)
       return self.garthClient.connectapi(path, **kwargs)
      
 
   ## 获取运动
   def getActivities(self, start:int, limit:int):
      params = {"start": str(start), "limit": str(limit)}
-     activities =  self.connectapi(path=GARMIN_URL_DICT["garmin_connect_activities"], params=params)
+     activities = self.connectapi(path=GARMIN_URL_DICT["garmin_connect_activities"], params=params)
      logger.info(f"activities={activities}")
      return activities;
 
@@ -58,12 +59,13 @@ class GarminClient:
     all_activities = []
     start = 0
     while True:
-      activities = self.getActivities(start=start, limit=1000)
+      activities = self.getActivities(start=start, limit=500)
       if len(activities) > 0:
          all_activities.extend(activities)
+         print(activities)
       else:
          return all_activities
-      start += 100
+      start += 500
 
   ## 下载原始格式的运动
   def downloadFitActivity(self, activity):
